@@ -67,13 +67,6 @@ public class SudokuGUI implements Runnable {
 	}
 
 	/**
-	 * Standard way to update the dataModel based on the GUI.
-	 */
-	public void update() {
-		this.getData();
-	}
-
-	/**
 	 * Sets up the GUI for Sudoku. Uses <code>JFormattedTextField</code> in order to limit user's inputs to numbers.  
 	 * Uses a switch statement to create borders. <code>BorderFactory</code> creates <code>MatteBorder</code> which is needed as a result of pixel issues with borders in <code>GridLayout</code>.
 	 */
@@ -99,7 +92,6 @@ public class SudokuGUI implements Runnable {
 			for(int col = 0; col< SIZE; col++){
 				JFormattedTextField numberTextField = new JFormattedTextField(formatter);
 				numberTextField.setBorder(BorderFactory.createEmptyBorder());
-				numberTextField.setText("");
 				formatter.setAllowsInvalid(false);
 				_grid[row][col] = numberTextField;
 
@@ -155,7 +147,7 @@ public class SudokuGUI implements Runnable {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				_sudokuGUI.update();
+				_sudokuGUI.getData();
 				_model.setGUI(_sudokuGUI);
 				if(_model.isDuplicatesAll(_representation)){
 					JOptionPane.showMessageDialog(null , "Duplicates found in:\n\nRows\nColumns\nOr Squares", "Illegal Inputs" , JOptionPane.WARNING_MESSAGE);
