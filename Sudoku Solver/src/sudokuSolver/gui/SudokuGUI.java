@@ -13,8 +13,10 @@ import java.text.NumberFormat;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.border.CompoundBorder;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import javax.swing.text.NumberFormatter;
 
@@ -62,62 +64,53 @@ public class SudokuGUI implements Runnable {
 
 	/**
 	 * Sets up the GUI for Sudoku. Uses <code>JFormattedTextField</code> in order to limit user's inputs to numbers.  
-	 * Uses a switch statement to create borders. <code>BorderFactory</code> creates <code>MatteBorder</code> which is needed as a result of pixel issues with borders in <code>GridLayout</code>.
+	 * Uses a switch statement to create borders. <code>BorderFactory</code> creates <code>MatteBorder</code> to create thicker borders.
 	 */
 	@Override
 	public void run() {
 		JFrame window = new JFrame("Sudoku Game");
-		window.setLayout(new GridLayout(SIZE+1,SIZE,0,0));
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setLayout(new GridLayout(2,1,0,0));
+		
+		JPanel gridPanel = new JPanel();
+		gridPanel.setLayout(new GridLayout(SIZE,SIZE,0,0));
+		
+		JPanel otherPanel = new JPanel();
+		otherPanel.setLayout(new GridLayout(1,3,0,0));
+		
+		
 		NumberFormat format = NumberFormat.getInstance();
 		NumberFormatter formatter = new NumberFormatter(format);
 		formatter.setValueClass(Integer.class);
 		formatter.setMinimum(0);
 		formatter.setMaximum(9);
+		
 		MatteBorder rightBorder = new MatteBorder(0,0,0,4, Color.BLACK);
 		MatteBorder topBorder = new MatteBorder(4,0,0,0, Color.BLACK);
 		MatteBorder leftBorder = new MatteBorder(0,4,0,0, Color.BLACK);
 		MatteBorder bottomBorder = new MatteBorder(0,0,4,0, Color.BLACK);
-		MatteBorder borderFix1 = new MatteBorder(1,1,1,1, Color.GRAY);
-		MatteBorder borderFix2 = new MatteBorder(0,0,0,0, Color.GRAY);
-		CompoundBorder combinedBorderFix = BorderFactory.createCompoundBorder(borderFix1,borderFix2);
 
 		for(int row = 0; row < SIZE; row++){
 			for(int col = 0; col< SIZE; col++){
 				JFormattedTextField numberTextField = new JFormattedTextField(formatter);
-				numberTextField.setBorder(BorderFactory.createEmptyBorder());
+				numberTextField.setBorder(BorderFactory.createLineBorder(Color.black));
 				formatter.setAllowsInvalid(false);
 				_grid[row][col] = numberTextField;
 
-				switch(row%(SIZE/3)){
-				case 0: numberTextField.setBorder(topBorder);
+				switch(row%((int)Math.sqrt(SIZE))){
+				case 0: numberTextField.setBorder(BorderFactory.createCompoundBorder(topBorder, numberTextField.getBorder()));
 				break;
-				case 1: numberTextField.setBorder(combinedBorderFix);
+				case 1: 
 				break;
-				case 2: numberTextField.setBorder(bottomBorder);
+				case 2: numberTextField.setBorder(BorderFactory.createCompoundBorder(bottomBorder, numberTextField.getBorder()));
 				break;
 				}
 
-				switch(col%(SIZE/3)){
-				case 0: CompoundBorder case0Border = BorderFactory.createCompoundBorder(leftBorder,numberTextField.getBorder());
-				if(numberTextField.getBorder().equals(combinedBorderFix)){
-					numberTextField.setBorder(leftBorder);
-					break;
-				}
-				else{
-					numberTextField.setBorder(BorderFactory.createCompoundBorder(case0Border,combinedBorderFix));
-					break;
-				}
+				switch(col%((int)Math.sqrt(SIZE))){
+				case 0: numberTextField.setBorder(BorderFactory.createCompoundBorder(leftBorder, numberTextField.getBorder()));
+				break;
 				case 1: break;
-				case 2: CompoundBorder case2Border = BorderFactory.createCompoundBorder(rightBorder,numberTextField.getBorder());
-				if(numberTextField.getBorder().equals(combinedBorderFix)){
-					numberTextField.setBorder(rightBorder);
-					break;
-				}
-				else{
-					numberTextField.setBorder(BorderFactory.createCompoundBorder(case2Border,combinedBorderFix));
-					break;
-				}
+				case 2: numberTextField.setBorder(BorderFactory.createCompoundBorder(rightBorder,numberTextField.getBorder()));
+				break;
 				}
 
 				numberTextField.addFocusListener(new FocusListener(){
@@ -132,9 +125,17 @@ public class SudokuGUI implements Runnable {
 					}
 				});
 
-				window.add(_grid[row][col]);		
+				gridPanel.add(_grid[row][col]);		
 			}
 		}
+		
+		JLabel instructions = new JLabel("<HTML><body><H1>Instructions</H1><p>Input your sudoku numbers into the text fields. <p><p> click the solve button to solve the given inputs!<p></body></HTML>",SwingConstants.LEFT);
+		instructions.setVerticalAlignment(SwingConstants.TOP);
+		otherPanel.add(instructions);
+		
+		JLabel notes = new JLabel("<HTML><body><H1>Notes</H1><p> You can set a text field to be "+ '"' + "empty" + '"' + " by inputting 0.</body></HTML>",SwingConstants.LEFT );
+		notes.setVerticalAlignment(SwingConstants.TOP);
+		otherPanel.add(notes);
 
 		JButton solveButton = new JButton("Solve");
 		solveButton.addActionListener(new ActionListener(){
@@ -150,10 +151,17 @@ public class SudokuGUI implements Runnable {
 				}
 			}
 		});
-
-		window.add(solveButton);
+		
+		otherPanel.add(solveButton);
+		
+		
+		
+		window.add(gridPanel);
+		window.add(otherPanel);
 		window.pack();
+		window.setSize(600, 600);
 		window.setVisible(true);
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	/**
