@@ -41,11 +41,6 @@ public class SudokuGUI implements Runnable {
 	private JFormattedTextField[][] _grid;
 
 	/**
-	 * The GUI currently worked on to send to DataModel.
-	 */
-	private SudokuGUI _sudokuGUI;
-
-	/**
 	 * 2-D int array which represents the data within the GUI.
 	 */
 	private int[][] _representation;
@@ -59,10 +54,9 @@ public class SudokuGUI implements Runnable {
 	 * Initializes all instance variables.
 	 * @param dataModel The dataModel to send information to
 	 */
-	public SudokuGUI (DataModel dataModel) {
+	public SudokuGUI () {
+		_model = new DataModel(this);
 		_grid = new JFormattedTextField[SIZE][SIZE];
-		_model = dataModel;
-		_sudokuGUI = this;
 		_representation = new int[SIZE][SIZE];
 	}
 
@@ -147,13 +141,12 @@ public class SudokuGUI implements Runnable {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				_sudokuGUI.getData();
-				_model.setGUI(_sudokuGUI);
+				getData();
 				if(_model.isDuplicatesAll(_representation)){
 					JOptionPane.showMessageDialog(null , "Duplicates found in:\n\nRows\nColumns\nOr Squares", "Illegal Inputs" , JOptionPane.WARNING_MESSAGE);
 				}
 				else{	
-					_model.solve(_representation,_sudokuGUI);
+					_model.solve(_representation);
 				}
 			}
 		});

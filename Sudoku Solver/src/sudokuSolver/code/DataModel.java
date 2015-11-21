@@ -9,7 +9,7 @@ import sudokuSolver.gui.*;
  * <p>
  * <code>DataModel</code> has a main recursive method as well as helper methods for the recursive method.
  * <p>
- * <code>DataModel</code> also has methods to link itself to a given <code>SudokuGUI</code> as well feed the information back to the <code>SudokuGUI</code>.
+ * <code>DataModel</code> also has methods to feed the information back to the <code>SudokuGUI</code>.
  * @author Zachary Moore
  *
  */
@@ -26,9 +26,10 @@ public class DataModel {
 	private static final int SIZE = 9;
 
 	/**
-	 * No argument constructor.
+	 * Intakes a <code>SudokuGUI</code> to be analyzed and sets {@code _gui} to that <code>SudokuGUI</code>.
 	 */
-	public DataModel(){
+	public DataModel(SudokuGUI gui){
+		_gui = gui;
 	}
 
 	/**
@@ -36,9 +37,9 @@ public class DataModel {
 	 * <p>
 	 * Calls the recursive method as well as sets {@code _gui} GUI to be the correct answer or an empty 2-D array.
 	 * @param data Data given from the {@code gui} to be solved
-	 * @param gui GUI that {@code data} will be solved for
+	 *
 	 */
-	public void solve(int[][] data, SudokuGUI gui){
+	public void solve(int[][] data){
 		if(analyze(data)){
 			_gui.setGUI(data);
 		}
@@ -163,14 +164,6 @@ public class DataModel {
 		else{
 			return false;
 		}
-	}
-
-	/**
-	 * Links <code>DataModel</code> to the <code>SudokuGUI</code> that it is dealing with.
-	 * @param sudokugui The <code>SudokuGUI</code> to be linked
-	 */
-	public void setGUI(SudokuGUI sudokugui){
-		_gui = sudokugui;
 	}
 
 	/**

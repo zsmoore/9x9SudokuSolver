@@ -10,12 +10,10 @@ import javax.swing.SwingUtilities;
 public class Driver {
 
 	/**
-	 * Creates a <code>SudokuGUI</code> and a <code>DataModel</code> and then links them together.
+	 * Creates a <code>SudokuGUI</code>.
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		DataModel dataModel = new sudokuSolver.code.DataModel();
-		SudokuGUI gui = new SudokuGUI(dataModel);
-		SwingUtilities.invokeLater(gui);
+		SwingUtilities.invokeLater(new SudokuGUI());
 	}
 }
